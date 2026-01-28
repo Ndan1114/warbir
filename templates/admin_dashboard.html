@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warung Biru - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --info: #4895ef;
+            --warning: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 15px 12px;
+        }
+        
+        .table td {
+            vertical-align: middle;
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .badge-status-pending {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            color: #000;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        
+        .badge-status-completed {
+            background: linear-gradient(135deg, #198754 0%, #157347 100%);
+            color: #fff;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        
+        .badge-status-cancelled {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: #fff;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .orders-sticky {
+            position: sticky;
+            top: 90px;
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 12px 0;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 2px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .new-order {
+            background: rgba(255, 193, 7, 0.08);
+            border-left: 4px solid #ffc107;
+            transition: all 0.3s ease;
+        }
+        
+        .new-order:hover {
+            background: rgba(255, 193, 7, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.5);
+        }
+        
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 20px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 20px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <i class="fas fa-utensils me-2 fa-lg"></i>
+                <span class="fs-4">Warung Biru</span>
+                <span class="badge bg-light text-primary ms-2 fs-6">Admin</span>
+            </a>
+            
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-2"></i>
+                        Admin
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item text-danger" href="/admin/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="dashboard-container p-3 p-md-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <h1 class="h2 fw-bold gradient-text mb-1">Dashboard Admin</h1>
+                        <p class="text-muted mb-0">Kelola Warung Biru</p>
+                    </div>
+                    <div class="d-flex align-items-center mt-2 mt-md-0">
+                        <span class="text-muted me-3" id="current-date-time"></span>
+                        <button class="btn btn-outline-danger btn-sm" onclick="confirmReset()" title="Reset data pelanggan">
+                            <i class="fas fa-trash me-1"></i>Reset Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="row">
+            <!-- Menu Management Section -->
+            <div class="col-lg-7 mb-4">
+                <div class="card card-hover h-100">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 section-title">Kelola Menu</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMenuModal">
+                            <i class="fas fa-plus me-1"></i>Tambah Menu
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <!-- Menu List -->
+                        {% if menu_items %}
+                        <div class="table-responsive" style="max-height: 500px; overflow-y:auto">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>Harga</th>
+                                        <th>Kategori</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in menu_items %}
+                                    <tr class="slide-in">
+                                        <td>{{ item.nama }}</td>
+                                        <td class="fw-bold text-success">Rp {{ "{:,.0f}".format(item.harga) }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if item.kategori == 'makanan' %}bg-primary
+                                                {% elif item.kategori == 'minuman' %}bg-info
+                                                {% else %}bg-warning text-dark{% endif %} p-2">
+                                                <i class="fas {% if item.kategori == 'makanan' %}fa-utensils{% elif item.kategori == 'minuman' %}fa-glass-water{% else %}fa-cookie{% endif %} me-1"></i>
+                                                {{ item.kategori }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if item.tersedia %}
+                                            <span class="badge bg-success p-2">
+                                                <i class="fas fa-check me-1"></i>Tersedia
+                                            </span>
+                                            {% else %}
+                                            <span class="badge bg-danger p-2">
+                                                <i class="fas fa-times me-1"></i>Tidak Tersedia
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editMenuModal{{ item.id }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ item.id }})">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-utensils fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">Belum ada menu.</h5>
+                            <p class="text-muted">Mulai dengan menambahkan menu pertama Anda</p>
+                            <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addMenuModal">
+                                <i class="fas fa-plus me-1"></i>Tambah Menu Pertama
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Section -->
+            <div class="col-lg-5 mb-4">
+                <div class="card card-hover orders-sticky">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 section-title">Pesanan Terbaru</h5>
+                        <div class="btn-group">
+                            <input type="text" class="form-control form-control-sm ms-2" placeholder="Cari pelanggan..." onkeyup="searchOrders(this.value)" style="width: 160px;">
+                            <button class="btn btn-outline-primary btn-sm dropdown-toggle"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                <i class="fas fa-filter me-1"></i> Filter
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#" onclick="filterOrders('all')">Semua</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="filterOrders('pending')">Pending</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="filterOrders('completed')">Completed</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="filterOrders('cancelled')">Cancelled</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if orders %}
+                        <div class="table-responsive" style="max-height: 300px; overflow-y:auto">
+                            <table class="table table-hover" id="ordersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Pelanggan</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    {% if order.nama_pelanggan and order.nama_pelanggan.strip() %}
+                                    <tr class="order-row {% if order.status == 'pending' %}new-order{% endif %} slide-in" data-status="{{ order.status }}" data-order-id="{{ order.id }}">
+                                        <td>
+                                            <div class="fw-bold">{{ order.nama_pelanggan }}</div>
+                                            <small class="text-muted">
+                                                <i class="fas fa-credit-card me-1"></i>{{ order.metode_pembayaran or 'Tunai' }}
+                                            </small>
+                                        </td>
+                                        <td class="fw-bold text-success">Rp {{ "{:,.0f}".format(order.total_harga) }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if order.status == 'pending' %}badge-status-pending
+                                                {% elif order.status == 'completed' %}badge-status-completed
+                                                {% else %}badge-status-cancelled{% endif %}">
+                                                {% if order.status == 'pending' %}
+                                                <i class="fas fa-clock me-1"></i>
+                                                {% elif order.status == 'completed' %}
+                                                <i class="fas fa-check me-1"></i>
+                                                {% else %}
+                                                <i class="fas fa-times me-1"></i>
+                                                {% endif %}
+                                                {{ order.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <i class="fas fa-cog"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="updateStatus({{ order.id }}, 'pending')">
+                                                        <i class="fas fa-clock me-2"></i>Pending
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="updateStatus({{ order.id }}, 'completed')">
+                                                        <i class="fas fa-check me-2"></i>Completed
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="updateStatus({{ order.id }}, 'cancelled')">
+                                                        <i class="fas fa-times me-2"></i>Cancelled
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">Belum ada pesanan.</h5>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>  
+
+        {% for item in menu_items %}
+        <!-- Edit Menu Modal -->
+        <div class="modal fade" id="editMenuModal{{ item.id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Menu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="/admin/menu/edit/{{ item.id }}" id="editMenuForm{{ item.id }}">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="edit_nama{{ item.id }}" class="form-label">Nama Menu</label>
+                                <input type="text" class="form-control" id="edit_nama{{ item.id }}" name="nama" value="{{ item.nama }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_harga{{ item.id }}" class="form-label">Harga</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="number" class="form-control" id="edit_harga{{ item.id }}" name="harga" value="{{ item.harga }}" min="0" step="100" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_kategori{{ item.id }}" class="form-label">Kategori</label>
+                                <select class="form-select" id="edit_kategori{{ item.id }}" name="kategori" required>
+                                    <option value="makanan" {% if item.kategori == 'makanan' %}selected{% endif %}>Makanan</option>
+                                    <option value="minuman" {% if item.kategori == 'minuman' %}selected{% endif %}>Minuman</option>
+                                    <option value="snack" {% if item.kategori == 'snack' %}selected{% endif %}>Snack</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 form-check form-switch">
+                                <input type="checkbox" class="form-check-input" id="edit_tersedia{{ item.id }}" name="tersedia" {% if item.tersedia %}checked{% endif %}>
+                                <label class="form-check-label" for="edit_tersedia{{ item.id }}">Tersedia</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    <!-- Add Menu Modal -->
+    <div class="modal fade" id="addMenuModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Menu Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="addMenuForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama Menu</label>
+                            <input type="text" class="form-control" id="nama" name="nama" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="harga" class="form-label">Harga</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="number" class="form-control" id="harga" name="harga" min="0" step="100" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="kategori" class="form-label">Kategori</label>
+                            <select class="form-select" id="kategori" name="kategori" required>
+                                <option value="makanan">Makanan</option>
+                                <option value="minuman">Minuman</option>
+                                <option value="snack">Snack</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="submitAddMenu">
+                            <i class="fas fa-plus me-1"></i>Tambah Menu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Update Form (Hidden) -->
+    <form id="statusForm" method="POST" action="/admin/order/update_status" style="display: none;">
+        <input type="hidden" id="order_id" name="order_id">
+        <input type="hidden" id="status" name="status">
+    </form>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Update current date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('current-date-time').textContent = 
+                now.toLocaleDateString('id-ID', options);
+        }
+        
+        // Initial call and set interval
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Update order status with AJAX
+        function updateStatus(orderId, status) {
+            // Show loading animation
+            const row = document.querySelector(`tr[data-status] td:last-child`);
+            if (row) {
+                row.innerHTML = '<div class="loading-spinner"></div>';
+            }
+            
+            // AJAX request
+            $.ajax({
+                url: '/admin/order/update_status',
+                type: 'POST',
+                data: {
+                    order_id: orderId,
+                    status: status
+                },
+                success: function(response) {
+                    // Show success message
+                    showAlert('Status pesanan berhasil diperbarui!', 'success');
+                    // Reload after a short delay
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                },
+                error: function(xhr, status, error) {
+                    showAlert('Terjadi kesalahan saat memperbarui status pesanan', 'danger');
+                }
+            });
+        }
+        
+        // Filter orders by status
+        function filterOrders(status) {
+            const rows = document.querySelectorAll('.order-row');
+            /* untuk menyembunyikan baris yang tidak sesuai dengan status yang dipilih */
+            rows.forEach(row => {
+                const rowStatus = row.dataset.status;
+
+                if (status === 'all' || rowStatus === status) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        // Add menu with AJAX
+        document.getElementById('addMenuForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nama = document.getElementById('nama').value.trim();
+            const harga = document.getElementById('harga').value;
+            const kategori = document.getElementById('kategori').value;
+            
+            if (!nama) {
+                showAlert('Nama menu harus diisi', 'warning');
+                return;
+            }
+            
+            if (!harga || parseFloat(harga) <= 0) {
+                showAlert('Harga harus lebih dari 0', 'warning');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitAddMenu');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="loading-spinner"></div> Menambahkan...';
+            submitBtn.disabled = true;
+            
+            // AJAX request to add menu
+            $.ajax({
+                url: '/admin/menu/add',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    // Show success message
+                    showAlert('Menu berhasil ditambahkan!', 'success');
+                    
+                    // Close modal and reset form
+                    $('#addMenuModal').modal('hide');
+                    document.getElementById('addMenuForm').reset();
+                    
+                    // Reset button
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Reload after a short delay
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                },
+                error: function(xhr, status, error) {
+                    showAlert('Terjadi kesalahan saat menambahkan menu', 'danger');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+        
+        // PERBAIKAN: Fungsi untuk handle edit form submission
+        function setupEditForms() {
+            document.querySelectorAll('form[id^="editMenuForm"]').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formId = this.id;
+                    const menuId = formId.replace('editMenuForm', '');
+                    
+                    // Show loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<div class="loading-spinner"></div> Menyimpan...';
+                    submitBtn.disabled = true;
+                    
+                    // AJAX request to edit menu
+                    $.ajax({
+                        url: `/admin/menu/edit/${menuId}`,
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        success: function(response) {
+                            // Show success message
+                            showAlert('Menu berhasil diperbarui!', 'success');
+                            
+                            // Close modal
+                            $(`#editMenuModal${menuId}`).modal('hide');
+                            
+                            // Reset button
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                            
+                            // Reload after a short delay
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        },
+                        error: function(xhr, status, error) {
+                            showAlert('Terjadi kesalahan saat memperbarui menu', 'danger');
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                        }
+                    });
+                });
+            });
+        }
+        /* fungsi untuk mencari pesanan berdasarkan kata kunci */
+        function searchOrders(keyword) {
+            keyword = keyword.toLowerCase();
+            const rows = document.querySelectorAll('.order-row');
+
+            rows.forEach(row => {
+                const nama = row.querySelector('td').innerText.toLowerCase();
+                row.style.display = nama.includes(keyword) ? 'table-row' : 'none';
+            });
+        }
+
+        // menggunakan AJAX GET
+        function confirmDelete(menuId) {
+            if (confirm('Yakin ingin menghapus menu ini?')) {
+                // Show loading
+                showAlert('Menghapus menu...', 'info');
+                
+                // AJAX request to delete menu (GET method)
+                $.ajax({
+                    url: `/admin/menu/delete/${menuId}`,
+                    type: 'GET',
+                    success: function(response) {
+                        showAlert('Menu berhasil dihapus!', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    },
+                    error: function(xhr, status, error) {
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            showAlert(xhr.responseJSON.message, 'danger');
+                        } else {
+                            showAlert('Terjadi kesalahan saat menghapus menu', 'danger');
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Confirm reset data
+        function confirmReset() {
+            if (confirm('Yakin ingin mereset semua data pelanggan? Tindakan ini tidak dapat dibatalkan!')) {
+                window.location.href = '/admin/reset_customer_data';
+            }
+        }
+        
+        // Show alert message
+        function showAlert(message, type) {
+            // Remove existing alerts
+            $('.alert-dismissible').remove();
+            
+            const alertClass = type === 'success' ? 'alert-success' : 
+                             type === 'warning' ? 'alert-warning' :
+                             type === 'danger' ? 'alert-danger' : 'alert-info';
+            
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1060; min-width: 300px;">
+                    <div class="d-flex align-items-center">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'warning' ? 'fa-exclamation-triangle' : type === 'danger' ? 'fa-times-circle' : 'fa-info-circle'} me-2"></i>
+                        <div>${message}</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            $('body').append(alertHtml);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                $('.alert-dismissible').alert('close');
+            }, 5000);
+        }
+        
+        // Auto-refresh orders every 30 seconds
+        setInterval(function() {
+            // In a real app, you would check for new orders with AJAX
+            // For demo purposes, we'll just pulse the live badge
+            $('.pulse').addClass('pulse');
+            setTimeout(() => {
+                $('.pulse').removeClass('pulse');
+            }, 1000);
+        }, 30000);
+        
+        // Add animations to elements on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // Animate table rows
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.05}s`;
+            });
+            
+            // setup edit forms setelah DOM selesai dimuat
+            setupEditForms();
+            // Inisialisasi real-time orders
+            initRealTimeOrders();
+        });
+        // Real-time orders update dengan AJAX
+        let lastOrderId = 0;
+        let isPollingActive = true;
+
+        // Fungsi untuk mendapatkan ID pesanan terakhir
+        function getLastOrderId() {
+            const rows = document.querySelectorAll('.order-row[data-order-id]');
+            if (rows.length > 0) {
+                const lastRow = rows[0];
+                return parseInt(lastRow.dataset.orderId);
+            }
+            return 0;
+        }
+
+        // Fungsi untuk memeriksa pesanan baru
+        function checkNewOrders() {
+            if (!isPollingActive) return;
+            
+            $.ajax({
+                url: '/admin/api/check_new_orders',
+                type: 'GET',
+                data: { last_order_id: lastOrderId },
+                success: function(response) {
+                    if (response.status === 'success' && response.new_orders.length > 0) {
+                        // Tampilkan notifikasi
+                        showNewOrderNotification(response.new_orders.length);
+                        
+                        // Update lastOrderId
+                        if (response.new_orders[0].id > lastOrderId) {
+                            lastOrderId = response.new_orders[0].id;
+                        }
+                        
+                        // Tambahkan pesanan baru ke tabel
+                        addNewOrdersToTable(response.new_orders);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error checking new orders:', error);
+                }
+            });
+        }
+
+        // Fungsi untuk menampilkan notifikasi pesanan baru
+        function showNewOrderNotification(count) {
+            // Buat atau update notifikasi badge
+            let notificationBadge = document.getElementById('new-orders-badge');
+            
+            if (!notificationBadge) {
+                notificationBadge = document.createElement('span');
+                notificationBadge.id = 'new-orders-badge';
+                notificationBadge.className = 'badge bg-danger position-absolute top-0 start-100 translate-middle pulse';
+                notificationBadge.style.zIndex = '1050';
+                
+                const ordersTitle = document.querySelector('.section-title');
+                if (ordersTitle) {
+                    const titleContainer = ordersTitle.parentElement;
+                    titleContainer.style.position = 'relative';
+                    titleContainer.appendChild(notificationBadge);
+                }
+            }
+            
+            notificationBadge.textContent = count;
+            notificationBadge.style.display = 'block';
+            
+            // Tambahkan animasi dan suara (opsional)
+            playNotificationSound();
+            
+            // Auto-hide notifikasi setelah 10 detik
+            setTimeout(() => {
+                notificationBadge.style.display = 'none';
+            }, 10000);
+        }
+
+        // Fungsi untuk memainkan suara notifikasi
+        function playNotificationSound() {
+            try {
+                const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ');
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Audio play failed:', e));
+            } catch (e) {
+                console.log('Notification sound error:', e);
+            }
+        }
+
+        // Fungsi untuk menambahkan pesanan baru ke tabel
+        function addNewOrdersToTable(newOrders) {
+            const tbody = document.querySelector('#ordersTable tbody');
+            
+            newOrders.forEach(order => {
+                // Cek apakah pesanan sudah ada di tabel
+                const existingRow = document.querySelector(`tr[data-order-id="${order.id}"]`);
+                if (existingRow) return;
+                
+                // Buat baris baru
+                const newRow = createOrderRow(order);
+                
+                // Tambahkan ke atas tabel
+                if (tbody.firstChild) {
+                    tbody.insertBefore(newRow, tbody.firstChild);
+                } else {
+                    tbody.appendChild(newRow);
+                }
+                
+                // Tambahkan efek highlight
+                newRow.classList.add('new-order-highlight');
+                setTimeout(() => {
+                    newRow.classList.remove('new-order-highlight');
+                }, 3000);
+            });
+        }
+
+        // Fungsi untuk membuat baris pesanan
+        function createOrderRow(order) {
+            const row = document.createElement('tr');
+            row.className = 'order-row slide-in new-order';
+            row.dataset.status = order.status;
+            row.dataset.orderId = order.id;
+            
+            // Status badge
+            let statusBadge = '';
+            if (order.status === 'pending') {
+                statusBadge = '<span class="badge badge-status-pending"><i class="fas fa-clock me-1"></i>pending</span>';
+            } else if (order.status === 'completed') {
+                statusBadge = '<span class="badge badge-status-completed"><i class="fas fa-check me-1"></i>completed</span>';
+            } else {
+                statusBadge = '<span class="badge badge-status-cancelled"><i class="fas fa-times me-1"></i>cancelled</span>';
+            }
+            
+            // Tombol aksi
+            const actionButtons = `
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="updateStatus(${order.id}, 'pending')">
+                            <i class="fas fa-clock me-2"></i>Pending
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateStatus(${order.id}, 'completed')">
+                            <i class="fas fa-check me-2"></i>Completed
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateStatus(${order.id}, 'cancelled')">
+                            <i class="fas fa-times me-2"></i>Cancelled
+                        </a></li>
+                    </ul>
+                </div>
+            `;
+            
+            row.innerHTML = `
+                <td>
+                    <div class="fw-bold">${order.nama_pelanggan}</div>
+                    <small class="text-muted">
+                        <i class="fas fa-credit-card me-1"></i>${order.metode_pembayaran || 'Tunai'}
+                    </small>
+                </td>
+                <td class="fw-bold text-success">Rp ${formatNumber(order.total_harga)}</td>
+                <td>${statusBadge}</td>
+                <td>${actionButtons}</td>
+            `;
+            
+            return row;
+        }
+
+        // Fungsi untuk memformat angka
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Inisialisasi real-time orders
+        function initRealTimeOrders() {
+            // Set lastOrderId dari pesanan pertama di tabel
+            lastOrderId = getLastOrderId();
+            
+            // Mulai polling setiap 5 detik
+            setInterval(checkNewOrders, 5000);
+            
+            // Juga cek saat halaman pertama kali load
+            setTimeout(checkNewOrders, 2000);
+        }
+
+        // Tambahkan style untuk highlight pesanan baru
+        const newStyle = document.createElement('style');
+        newStyle.textContent = `
+            .new-order-highlight {
+                animation: highlightPulse 1s ease-in-out 3;
+                background: linear-gradient(90deg, rgba(255,193,7,0.1) 0%, rgba(255,193,7,0.2) 100%);
+                border-left: 4px solid #ffc107;
+            }
+            
+            @keyframes highlightPulse {
+                0%, 100% { background-color: rgba(255,193,7,0.1); }
+                50% { background-color: rgba(255,193,7,0.3); }
+            }
+        `;
+        document.head.appendChild(newStyle);
+    </script>
+</body>
+</html>

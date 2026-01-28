@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warung Biru - Menu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+        html, body {
+            height: 100%;
+        }
+        /* Animasi untuk status messages */
+        .status-animation {
+            animation: bounceIn 0.6s ease;
+        }
+        
+        .processing-animation {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1 0 auto;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        @media (max-width: 768px) {
+            .navbar-toggler {
+                display: none !important;
+            }
+        }
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--secondary);
+            border-radius: 2px;
+        }
+        
+        .menu-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            background: white;
+            height: 100%;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .menu-image {
+            height: 200px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 4rem;
+        }
+        
+        .menu-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .menu-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .btn-add-cart {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+            color: white;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            width: 100%;
+            padding: 0.75rem;
+        }
+        
+        .btn-add-cart:hover {
+            background-color: #e69500;
+            border-color: #e69500;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+        
+        .cart-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--secondary) 0%, #e69500 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 1100;
+            transition: right 0.4s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .cart-modal.open {
+            right: 0;
+        }
+        
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .cart-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+        
+        .cart-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+            margin-top: auto;
+        }
+        /* Perbaiki container utama */
+        .container.my-5 {
+            flex: 1 0 auto;
+            padding-bottom: 2rem;
+        }
+        .container {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        /* Untuk tablet landscape */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .payment-content {
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+        }
+        /* Untuk memastikan form tetap terlihat di semua device */
+        #customerName {
+            font-size: 1rem;
+            padding: 0.75rem;
+        }
+        /* untuk tablet */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 720px;
+            }
+        }
+        /* Untuk desktop */
+        @media (min-width: 992px) {
+            .container {
+                max-width: 960px;
+            }
+        }
+
+        /* Untuk desktop besar */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1140px;
+            }
+        }
+        @media (max-width: 360px) {
+            footer {
+                padding: 1.5rem 0;
+            }
+            
+            footer p {
+                font-size: 0.9rem;
+            }
+            .payment-content {
+                padding: 0.75rem;
+            }
+            
+            .payment-option {
+                padding: 0.5rem;
+            }
+            
+            .btn {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Footer styling */
+        footer {
+            background: linear-gradient(135deg, var(--dark) 0%, #0f172a 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .cart-item-image {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .cart-item-price {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .quantity-btn:hover {
+            background-color: #cbd5e1;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            margin: 0 0.5rem;
+        }
+        
+        .remove-item {
+            color: #ef4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .remove-item:hover {
+            color: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .cart-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .cart-total {
+            font-size: 1.25rem;
+            color: var(--primary-dark);
+        }
+        
+        .btn-checkout {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            font-weight: 600;
+            border-radius: 50px;
+            padding: 0.75rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-checkout:hover {
+            background-color: #0da271;
+            border-color: #0da271;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 2rem 0;
+            color: #64748b;
+        }
+        
+        .empty-cart-icon {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-custom {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-btn {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Payment Modal Styles */
+        .payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        /* Nota Modal Styles */
+        .nota-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1300;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1rem;
+        }
+
+        .nota-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nota-content {
+            background-color: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.4s ease;
+            border: 2px solid var(--primary);
+        }
+
+        .nota-modal.active .nota-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .nota-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .nota-body {
+            padding: 1.5rem;
+            background: white;
+        }
+
+        .nota-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .nota-section:last-child {
+            border-bottom: none;
+        }
+
+        .nota-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .nota-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .nota-row span:first-child {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .nota-row span:last-child {
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        .nota-table-header {
+            display: flex;
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .nota-col-item {
+            flex: 3;
+        }
+
+        .nota-col-qty {
+            flex: 1;
+            text-align: center;
+        }
+
+        .nota-col-price {
+            flex: 2;
+            text-align: right;
+        }
+
+        .nota-col-total {
+            flex: 2;
+            text-align: right;
+        }
+
+        .nota-items {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .nota-item-row {
+            display: flex;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        .nota-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .nota-item-name {
+            flex: 3;
+            font-weight: 500;
+        }
+
+        .nota-item-qty {
+            flex: 1;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .nota-item-price {
+            flex: 2;
+            text-align: right;
+            color: #64748b;
+        }
+
+        .nota-item-subtotal {
+            flex: 2;
+            text-align: right;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .nota-total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .nota-total-row.grand-total {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            padding-top: 0.75rem;
+            border-top: 2px solid var(--primary);
+            margin-top: 0.75rem;
+        }
+
+        .nota-footer {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .nota-actions {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 0 0 14px 14px;
+        }
+
+        .nota-actions .btn {
+            flex: 1;
+            border-radius: 50px;
+            padding: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes slideInNota {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .nota-content {
+            animation: slideInNota 0.4s ease-out;
+        }
+        
+        .payment-content {
+            background-color: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .payment-modal.active .payment-content {
+            transform: translateY(0);
+        }
+        
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .payment-option:hover {
+            border-color: var(--primary);
+            background-color: #f0f9ff;
+        }
+        
+        .payment-option.active {
+            border-color: var(--primary);
+            background-color: #f0f9ff;
+        }
+        
+        .payment-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--primary);
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto;
+            color: var(--primary);
+            font-size: 3rem;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .cart-modal {
+                max-width: 90%;
+                height: 80vh;
+                top: 10vh;
+                border-radius: 16px 0 0 16px;
+                border-radius: 16px 16px 0 0; 
+                bottom: 0;
+            }
+            .cart-body {
+                max-height: calc(80vh - 140px); 
+            }
+            
+            .cart-icon {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 1.25rem;
+            }
+        }
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .toast-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast-notification.error {
+            background-color: #ef4444;
+        }
+
+        .toast-notification.warning {
+            background-color: #f59e0b;
+        }
+        
+        @media (max-width: 576px) {
+            .cart-modal {
+                max-width: 100%;
+                height: 85vh;
+                top: 15vh;
+                border-radius: 16px 16px 0 0;
+            }
+            .cart-body {
+                max-height: calc(85vh - 150px);
+            }
+            .toast-notification {
+                width: 90%;
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+            .payment-content {
+                width: 95%;
+                max-width: 95%;
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+            
+            .payment-option {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            .payment-icon {
+                font-size: 1.25rem;
+                margin-right: 0.75rem;
+            }
+            
+            .qr-code {
+                width: 150px;
+                height: 150px;
+                font-size: 2.5rem;
+            }
+            #customerName {
+                font-size: 0.9375rem;
+                padding: 0.625rem;
+            }
+            .nota-modal {
+                padding: 0.5rem;
+            }
+            
+            .nota-content {
+                max-width: 95%;
+                max-height: 85vh;
+            }
+            
+            .nota-table-header {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
+            
+            .nota-item-row {
+                font-size: 0.85rem;
+                padding: 0.5rem 0;
+            }
+            
+            .nota-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .nota-actions .btn {
+                width: 100%;
+            }
+        }
+        @media (max-height: 600px) {
+            .payment-content {
+                max-height: 85vh;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-utensils me-2"></i>Warung Biru
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/menu">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">Tentang Kami</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Kontak</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <h1 class="page-title fade-in">Menu Warung Biru</h1>
+        <!-- Filter Buttons -->
+        <div class="filter-buttons fade-in">
+            <button class="filter-btn active" data-filter="all">Semua</button>
+            <button class="filter-btn" data-filter="makanan">Makanan</button>
+            <button class="filter-btn" data-filter="minuman">Minuman</button>
+            <button class="filter-btn" data-filter="snack">Snack</button>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="row g-4">
+            {% for item in menu_items %}
+            <div class="col-lg-4 col-md-6 fade-in" data-category="{{ item.kategori or 'lainnya' }}">
+                <div class="menu-card">
+                    <div class="menu-image">
+                        {% if item.kategori == 'makanan' %}
+                            <i class="fas fa-utensils"></i>
+                        {% elif item.kategori == 'minuman' %}
+                            <i class="fas fa-glass-martini-alt"></i>
+                        {% elif item.kategori == 'snack' %}
+                            <i class="fas fa-cookie"></i>
+                        {% else %}
+                            <i class="fas fa-utensils"></i>
+                        {% endif %}
+                    </div>
+                    <div class="card-body p-4">
+                        <span class="menu-category">{{ item.kategori or 'Lainnya' }}</span>
+                        <h5 class="card-title fw-bold mb-2">{{ item.nama }}</h5>
+                        <p class="menu-price mb-3">Rp {{ "{:,.0f}".format(item.harga).replace(",", ".") }}</p>
+                        <form method="POST" action="/add_to_cart" class="add-to-cart-form">
+                            <input type="hidden" name="menu_id" value="{{ item.id }}">
+                            <div class="mb-3">
+                                <label for="quantity{{ item.id }}" class="form-label fw-semibold">Jumlah:</label>
+                                <input type="number" class="form-control" id="quantity{{ item.id }}" name="quantity" value="1" min="1" required>
+                            </div>
+                            <button type="submit" class="btn btn-add-cart">
+                                <i class="fas fa-cart-plus me-2"></i>Tambah ke Keranjang
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Cart Icon -->
+    <div class="cart-icon" id="cartIcon">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cartBadge">0</span>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <h4 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Keranjang Belanja</h4>
+            <button class="btn-close btn-close-white" id="closeCart"></button>
+        </div>
+        <div class="cart-body" id="cartBody">
+            <div class="empty-cart" id="emptyCart">
+                <div class="empty-cart-icon">
+                    <i class="fas fa-shopping-basket"></i>
+                </div>
+                <h5>Keranjang Kosong</h5>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-summary">
+                <span>Total:</span>
+                <span class="cart-total" id="cartTotal">Rp 0</span>
+            </div>
+            <button class="btn btn-checkout" id="checkoutBtn">
+                <i class="fas fa-credit-card me-2"></i>Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">Checkout Pesanan</h4>
+                <button class="btn-close" id="closePayment"></button>
+            </div>
+            
+            <!-- Form Nama Pelanggan -->
+            <div class="mb-4" id="customerNameSection">
+                <label for="customerName" class="form-label fw-semibold">Nama Pelanggan</label>
+                <input type="text" class="form-control" id="customerName" placeholder="Masukkan nama Anda" required>
+                <div class="invalid-feedback">Harap masukkan nama pelanggan</div>
+            </div>
+            
+            <!-- Metode Pembayaran -->
+            <h6 class="mb-3 fw-semibold">Pilih Metode Pembayaran</h6>
+            <div class="payment-option" data-method="qr">
+                <div class="payment-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div>
+                    <h6 class="mb-1">QR Code</h6>
+                    <p class="mb-0 text-muted">Scan QR code untuk pembayaran</p>
+                </div>
+            </div>
+            
+            <div class="payment-option" data-method="cash">
+                <div class="payment-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div>
+                    <h6 class="mb-1">Bayar Langsung</h6>
+                    <p class="mb-0 text-muted">Bayar saat makanan diantar</p>
+                </div>
+            </div>
+            
+            <!-- QR Code Section -->
+            <div id="qrCodeSection" class="d-none">
+                <div class="qr-code">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <p class="text-center text-muted mt-3">Scan QR code di atas untuk melakukan pembayaran</p>
+                <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-outline-secondary" id="backToPayment">Kembali</button>
+                    <button class="btn btn-primary" id="confirmPayment">Konfirmasi Pembayaran</button>
+                </div>
+            </div>
+            
+            <!-- Cash Payment Section -->
+            <div id="cashPaymentSection" class="d-none">
+                <div class="text-center py-4">
+                    <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+                    <h5>Pesanan Diproses</h5>
+                    <p class="text-muted">Silakan melakukan pembaayran!</p>
+                    <button class="btn btn-primary mt-3" id="finishCashPayment">Selesai</button>
+                </div>
+            </div>
+            
+            <!-- Status Messages -->
+            <div id="statusMessages" class="d-none">
+                <!-- QR Payment Success -->
+                <div id="qrSuccessMessage" class="text-center py-4 d-none">
+                    <div class="status-animation">
+                        <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5>Pembayaran Berhasil!</h5>
+                    <p class="text-muted small">Terima kasih atas pesanan Anda</p>
+                    <button class="btn btn-primary mt-3" id="closeSuccess">Tutup</button>
+                </div>
+                
+                <!-- Processing Message -->
+                <div id="processingMessage" class="text-center py-4 d-none">
+                    <div class="processing-animation">
+                        <i class="fas fa-spinner fa-spin text-primary mb-3" style="font-size: 3rem;"></i>
+                    </div>
+                    <p id="processingText" class="text-muted"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">Warung Biru. All rights reserved.</p>
+            <p class="text-muted mt-2" style="font-size: 0.9rem;"></p>
+        </div>
+    </footer>
+
+    <!-- Nota Modal -->
+    <div class="nota-modal" id="notaModal">
+        <div class="nota-content">
+            <div class="nota-header">
+                <div class="text-center">
+                    <h4 class="mb-1"><i class="fas fa-utensils me-2"></i>Warung Biru</h4>
+                    <p class="text-muted small mb-2">Struk Pembelian</p>
+                    <div id="notaInfo" class="nota-info">
+                        <p class="mb-1 small">No. Nota: <span id="notaNumber">--</span></p>
+                        <p class="mb-1 small">Tanggal: <span id="notaDate">--</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nota-body">
+                <!-- Customer Info -->
+                <div class="nota-section">
+                    <div class="nota-row">
+                        <span>Pelanggan:</span>
+                        <span id="notaCustomer">--</span>
+                    </div>
+                    <div class="nota-row">
+                        <span>Metode Bayar:</span>
+                        <span id="notaPaymentMethod">--</span>
+                    </div>
+                </div>
+                
+                <!-- Items List -->
+                <div class="nota-section">
+                    <div class="nota-table-header">
+                        <div class="nota-col-item">Item</div>
+                        <div class="nota-col-qty">Qty</div>
+                        <div class="nota-col-price">Harga</div>
+                        <div class="nota-col-total">Subtotal</div>
+                    </div>
+                    <div id="notaItems" class="nota-items">
+                        <!-- Items will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Total -->
+                <div class="nota-section">
+                    <div class="nota-total-row grand-total">
+                        <span>Total:</span>
+                        <span id="notaTotal">Rp 0</span>
+                    </div>
+                </div>
+                
+                <!-- Footer Message -->
+                <div class="nota-footer text-center">
+                    <p class="mb-2">Terima kasih telah berbelanja di Warung Biru</p>
+                </div>
+            </div>
+            
+            <div class="nota-actions">
+                <button class="btn btn-outline-secondary" id="closeNota">
+                    <i class="fas fa-times me-2"></i>Tutup
+                </button>
+                <button class="btn btn-primary" id="downloadNota">
+                    <i class="fas fa-download me-2"></i>Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Sample cart data - in a real app, this would come from your backend
+        let cartItems = [];
+        
+        // DOM Elements
+        const cartIcon = document.getElementById('cartIcon');
+        const cartBadge = document.getElementById('cartBadge');
+        const cartModal = document.getElementById('cartModal');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const closeCart = document.getElementById('closeCart');
+        const cartBody = document.getElementById('cartBody');
+        const emptyCart = document.getElementById('emptyCart');
+        const cartTotal = document.getElementById('cartTotal');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const menuItems = document.querySelectorAll('.fade-in[data-category]');
+        
+        // Payment modal elements
+        const paymentModal = document.getElementById('paymentModal');
+        const closePayment = document.getElementById('closePayment');
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const qrCodeSection = document.getElementById('qrCodeSection');
+        const cashPaymentSection = document.getElementById('cashPaymentSection');
+        const backToPayment = document.getElementById('backToPayment');
+        const confirmPayment = document.getElementById('confirmPayment');
+        const finishCashPayment = document.getElementById('finishCashPayment');
+        
+        // Open cart modal
+        cartIcon.addEventListener('click', () => {
+            cartModal.classList.add('open');
+            cartOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        function updateCartHeight() {
+            const cartBody = document.getElementById('cartBody');
+            const emptyCart = document.getElementById('emptyCart');
+            
+            if (cartItems.length === 0) {
+                // Saat keranjang kosong, atur tinggi minimum
+                cartBody.style.minHeight = '200px';
+                cartBody.style.display = 'flex';
+                cartBody.style.alignItems = 'center';
+                cartBody.style.justifyContent = 'center';
+            } else {
+                // Saat ada item, reset styling
+                cartBody.style.minHeight = '';
+                cartBody.style.display = '';
+                cartBody.style.alignItems = '';
+                cartBody.style.justifyContent = '';
+            }
+        }
+        
+        // Close cart modal
+        closeCart.addEventListener('click', closeCartModal);
+        cartOverlay.addEventListener('click', closeCartModal);
+        
+        function closeCartModal() {
+            cartModal.classList.remove('open');
+            cartOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Filter menu items
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Filter items
+                const filter = button.getAttribute('data-filter');
+                
+                menuItems.forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Add to cart functionality
+        document.querySelectorAll('.add-to-cart-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const menuId = this.querySelector('input[name="menu_id"]').value;
+                const quantity = parseInt(this.querySelector('input[name="quantity"]').value);
+                
+                // In a real app, you would send this to the server
+                // For demo, we'll simulate adding to cart
+                addToCart(menuId, quantity);
+                
+                // Reset form
+                this.querySelector('input[name="quantity"]').value = 1;
+            });
+        });
+        
+        // Add item to cart
+        function addToCart(menuId, quantity) {
+            const menuItemsData = {
+                {% for item in menu_items %}
+                '{{ item.id }}': { 
+                    name: '{{ item.nama }}', 
+                    price: {{ item.harga }}, 
+                    category: '{{ item.kategori or "lainnya" }}' 
+                },
+                {% endfor %}
+            };
+            
+            const menuItem = menuItemsData[menuId];
+            
+            if (!menuItem) return;
+            
+            // Check if item already in cart
+            const existingItem = cartItems.find(item => item.id === menuId);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cartItems.push({
+                    id: menuId,
+                    name: menuItem.name,
+                    price: menuItem.price,
+                    quantity: quantity,
+                    category: menuItem.category
+                });
+            }
+            
+            updateCartDisplay();
+        }
+        
+        // Update cart display
+        function updateCartDisplay() {
+            // Update badge
+            const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+            cartBadge.textContent = totalItems;
+            
+            // Update cart items
+            if (cartItems.length === 0) {
+                emptyCart.style.display = 'block';
+                cartBody.innerHTML = '';
+                cartBody.appendChild(emptyCart);
+                checkoutBtn.disabled = true;
+            } else {
+                emptyCart.style.display = 'none';
+                
+                let cartHTML = '';
+                let totalPrice = 0;
+                
+                cartItems.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    totalPrice += itemTotal;
+                    
+                    cartHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-image">
+                                <i class="fas fa-${item.category === 'makanan' ? 'utensils' : item.category === 'minuman' ? 'glass-martini-alt' : 'cookie'}"></i>
+                            </div>
+                            <div class="cart-item-details">
+                                <div class="cart-item-name">${item.name}</div>
+                                <div class="cart-item-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn decrease-quantity" data-id="${item.id}">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="text" class="quantity-input" value="${item.quantity}" readonly>
+                                    <button class="quantity-btn increase-quantity" data-id="${item.id}">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="remove-item" data-id="${item.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                cartBody.innerHTML = cartHTML;
+                cartTotal.textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+                checkoutBtn.disabled = false;
+                updateCartHeight();
+                
+                // Add event listeners to quantity controls
+                document.querySelectorAll('.decrease-quantity').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        updateQuantity(id, -1);
+                    });
+                });
+                
+                document.querySelectorAll('.increase-quantity').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        updateQuantity(id, 1);
+                    });
+                });
+                
+                document.querySelectorAll('.remove-item').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        removeFromCart(id);
+                    });
+                });
+            }
+        }
+        
+        // Update item quantity
+        function updateQuantity(id, change) {
+            const item = cartItems.find(item => item.id === id);
+            
+            if (item) {
+                item.quantity += change;
+                
+                if (item.quantity <= 0) {
+                    removeFromCart(id);
+                } else {
+                    updateCartDisplay();
+                }
+            }
+        }
+        
+        // Remove item from cart
+        function removeFromCart(id) {
+            cartItems = cartItems.filter(item => item.id !== id);
+            updateCartDisplay();
+        }
+        
+        // Checkout - open payment modal
+        checkoutBtn.addEventListener('click', function() {
+            if (cartItems.length > 0) {
+                closeCartModal();
+                paymentModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+        
+        // Close payment modal
+        closePayment.addEventListener('click', closePaymentModal);
+        function closePaymentModal() {
+            paymentModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            resetPaymentModal();
+        }
+        
+        // Reset payment modal to initial state
+        function resetPaymentModal() {
+            // Reset form
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerName').classList.remove('is-invalid');
+            
+            // Reset payment options
+            paymentOptions.forEach(option => {
+                option.classList.remove('active');
+                option.style.display = 'flex'; // Reset display
+            });
+            
+            // Hide all sections
+            qrCodeSection.classList.add('d-none');
+            cashPaymentSection.classList.add('d-none');
+            document.getElementById('statusMessages').classList.add('d-none');
+            document.getElementById('qrSuccessMessage').classList.add('d-none');
+            document.getElementById('processingMessage').classList.add('d-none');
+            
+            // Show customer name section
+            document.getElementById('customerNameSection').classList.remove('d-none');
+        }
+
+        // Validasi input nama
+        document.getElementById('customerName').addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+            }
+        });
+        
+        // Payment option selection
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                paymentOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                
+                const method = this.getAttribute('data-method');
+                
+                if (method === 'qr') {
+                    qrCodeSection.classList.remove('d-none');
+                    cashPaymentSection.classList.add('d-none');
+                } else if (method === 'cash') {
+                    cashPaymentSection.classList.remove('d-none');
+                    qrCodeSection.classList.add('d-none');
+                }
+            });
+        });
+        
+        // Back to payment options from QR code
+        backToPayment.addEventListener('click', function() {
+            resetPaymentModal();
+        });
+        // Nota modal elements
+        const notaModal = document.getElementById('notaModal');
+        const closeNota = document.getElementById('closeNota');
+        const downloadNotaBtn = document.getElementById('downloadNota');
+
+        // Function to show nota
+        function showNota(customerName, paymentMethod, items, totalHarga, orderNumber = null) {
+            // Generate order number if not provided
+            if (!orderNumber) {
+                orderNumber = 'WB-' + Date.now().toString().slice(-6);
+            }
+            
+            // Update nota info
+            document.getElementById('notaNumber').textContent = orderNumber;
+            document.getElementById('notaDate').textContent = new Date().toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            document.getElementById('notaCustomer').textContent = customerName;
+            document.getElementById('notaPaymentMethod').textContent = paymentMethod;
+            document.getElementById('notaTotal').textContent = formatCurrency(totalHarga);
+            
+            // Populate items
+            const notaItems = document.getElementById('notaItems');
+            notaItems.innerHTML = '';
+            
+            items.forEach(item => {
+                const subtotal = item.price * item.quantity;
+                const itemRow = document.createElement('div');
+                itemRow.className = 'nota-item-row';
+                itemRow.innerHTML = `
+                    <div class="nota-item-name">${item.name}</div>
+                    <div class="nota-item-qty">${item.quantity}</div>
+                    <div class="nota-item-price">${formatCurrency(item.price)}</div>
+                    <div class="nota-item-subtotal">${formatCurrency(subtotal)}</div>
+                `;
+                notaItems.appendChild(itemRow);
+            });
+            
+            // Show modal
+            notaModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Function to format currency
+        function formatCurrency(amount) {
+            return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+
+        // Function to generate PDF
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Get nota data
+            const notaNumber = document.getElementById('notaNumber').textContent;
+            const notaDate = document.getElementById('notaDate').textContent;
+            const customerName = document.getElementById('notaCustomer').textContent;
+            const paymentMethod = document.getElementById('notaPaymentMethod').textContent;
+            const total = document.getElementById('notaTotal').textContent;
+            
+            // PDF Styling
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 15;
+            
+            // Header
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Warung Biru', pageWidth / 2, margin, { align: 'center' });
+            
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Struk Pembelian', pageWidth / 2, margin + 8, { align: 'center' });
+            
+            // Info Section
+            let yPos = margin + 20;
+            doc.setFontSize(9);
+            doc.text(`No. Nota: ${notaNumber}`, margin, yPos);
+            doc.text(`Tanggal: ${notaDate}`, margin, yPos + 5);
+            doc.text(`Pelanggan: ${customerName}`, margin, yPos + 10);
+            doc.text(`Metode Bayar: ${paymentMethod}`, margin, yPos + 15);
+            
+            // Line separator
+            yPos += 25;
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            
+            // Table Header
+            yPos += 8;
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Item', margin, yPos);
+            doc.text('Qty', pageWidth - 60, yPos, { align: 'right' });
+            doc.text('Harga', pageWidth - 40, yPos, { align: 'right' });
+            doc.text('Subtotal', pageWidth - margin, yPos, { align: 'right' });
+            
+            // Items
+            yPos += 5;
+            doc.setFont('helvetica', 'normal');
+            const items = document.querySelectorAll('.nota-item-row');
+            
+            items.forEach(item => {
+                const name = item.querySelector('.nota-item-name').textContent;
+                const qty = item.querySelector('.nota-item-qty').textContent;
+                const price = item.querySelector('.nota-item-price').textContent;
+                const subtotal = item.querySelector('.nota-item-subtotal').textContent;
+                
+                // Wrap long item names
+                const maxWidth = 80;
+                const lines = doc.splitTextToSize(name, maxWidth);
+                
+                lines.forEach((line, index) => {
+                    if (yPos > 250) { // New page if needed
+                        doc.addPage();
+                        yPos = margin;
+                    }
+                    
+                    if (index === 0) {
+                        doc.text(line, margin, yPos);
+                        doc.text(qty, pageWidth - 60, yPos, { align: 'right' });
+                        doc.text(price, pageWidth - 40, yPos, { align: 'right' });
+                        doc.text(subtotal, pageWidth - margin, yPos, { align: 'right' });
+                    } else {
+                        doc.text(line, margin, yPos);
+                    }
+                    yPos += 5;
+                });
+                
+                yPos += 3;
+            });
+            
+            // Totals
+            yPos += 5;
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            
+            yPos += 10;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            
+            // HANYA TAMPILKAN TOTAL SAJA
+            doc.text('Total:', pageWidth - 60, yPos);
+            doc.text(total, pageWidth - margin, yPos, { align: 'right' });
+            
+            // Footer
+            yPos += 15;
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Terima kasih telah berbelanja di Warung Biru', pageWidth / 2, yPos, { align: 'center' });
+            yPos += 5;
+            
+            // Save PDF
+            doc.save(`Struk Pembelian Warung Biru - ${notaNumber}.pdf`);
+        }
+
+        // Event Listeners for Nota
+        closeNota.addEventListener('click', function() {
+            notaModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            // Reset cart setelah nota ditutup
+            cartItems = [];
+            updateCartDisplay();
+        });
+
+        downloadNotaBtn.addEventListener('click', generatePDF);
+
+        // Close nota modal when clicking outside
+        notaModal.addEventListener('click', function(e) {
+            if (e.target === notaModal) {
+                notaModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Confirm QR payment
+        confirmPayment.addEventListener('click', async function() {
+            const customerName = document.getElementById('customerName').value.trim();
+            
+            // Validasi nama pelanggan
+            if (!customerName) {
+                document.getElementById('customerName').classList.add('is-invalid');
+                return;
+            }
+            
+            const totalHarga = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Tampilkan pesan "sedang diproses"
+            showProcessingMessage("Pesanan sedang diproses");
+            
+            try {
+                const response = await fetch('/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nama_pelanggan: customerName,
+                        metode_pembayaran: "QR",
+                        items: cartItems,
+                        total_harga: totalHarga
+                    })
+                });
+
+                const result = await response.json();
+                
+                // Setelah 3 detik, tampilkan pesan sukses
+                setTimeout(() => {
+                    document.getElementById('processingMessage').classList.add('d-none');
+                    document.getElementById('qrSuccessMessage').classList.remove('d-none');
+                    
+                    // Tampilkan nota setelah 1 detik
+                    setTimeout(() => {
+                        closePaymentModal();
+                        showNota(customerName, "QR Code", cartItems, totalHarga);
+                    }, 1000);
+                    
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('processingMessage').classList.add('d-none');
+                document.getElementById('customerNameSection').classList.remove('d-none');
+                paymentOptions.forEach(opt => opt.style.display = 'flex');
+                showToast('Terjadi kesalahan saat memproses pesanan', 'error');
+            }
+        });
+
+        // Finish cash payment
+        finishCashPayment.addEventListener('click', async function() {
+            const customerName = document.getElementById('customerName').value.trim();
+            
+            // Validasi nama pelanggan
+            if (!customerName) {
+                document.getElementById('customerName').classList.add('is-invalid');
+                return;
+            }
+            
+            const totalHarga = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Langsung tampilkan ceklist
+            showCashProcessingMessage("Pesanan sedang diproses, segera lakukan pembayaran!");
+            
+            try {
+                const response = await fetch('/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nama_pelanggan: customerName,
+                        metode_pembayaran: "CASH",
+                        items: cartItems,
+                        total_harga: totalHarga
+                    })
+                });
+
+                const result = await response.json();
+                
+                // Setelah 2 detik, tampilkan nota
+                setTimeout(() => {
+                    closePaymentModal();
+                    showNota(customerName, "Cash", cartItems, totalHarga);
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('processingMessage').classList.add('d-none');
+                document.getElementById('customerNameSection').classList.remove('d-none');
+                paymentOptions.forEach(opt => opt.style.display = 'flex');
+                showToast('Terjadi kesalahan saat memproses pesanan', 'error');
+            }
+        });
+
+        // Fungsi untuk menampilkan pesan sukses QR (tanpa ID)
+        function showQRSuccess() {
+            document.getElementById('processingMessage').classList.add('d-none');
+            document.getElementById('qrSuccessMessage').classList.remove('d-none');
+        }
+
+        // Fungsi untuk menyelesaikan pesanan cash (tanpa alert)
+        function finishCashOrder() {
+            // Reset cart
+            cartItems = [];
+            updateCartDisplay();
+            
+            // Tutup modal tanpa alert
+            closePaymentModal();
+        }
+
+        // Fungsi untuk menampilkan pesan processing
+        function showProcessingMessage(message) {
+            // Sembunyikan semua section
+            document.getElementById('customerNameSection').classList.add('d-none');
+            paymentOptions.forEach(opt => opt.style.display = 'none');
+            document.getElementById('qrCodeSection').classList.add('d-none');
+            document.getElementById('cashPaymentSection').classList.add('d-none');
+            
+            // Tampilkan processing message
+            document.getElementById('statusMessages').classList.remove('d-none');
+            document.getElementById('processingMessage').classList.remove('d-none');
+            document.getElementById('processingText').textContent = message;
+        }
+
+        // Fungsi untuk menampilkan pesan sukses QR
+        function showQRSuccess(orderId) {
+            document.getElementById('processingMessage').classList.add('d-none');
+            document.getElementById('qrSuccessMessage').classList.remove('d-none');
+            document.getElementById('orderId').textContent = orderId;
+        }
+
+        // Fungsi untuk menampilkan pesan processing khusus cash (tanpa spinner)
+        function showCashProcessingMessage(message) {
+            // Sembunyikan semua section
+            document.getElementById('customerNameSection').classList.add('d-none');
+            paymentOptions.forEach(opt => opt.style.display = 'none');
+            document.getElementById('qrCodeSection').classList.add('d-none');
+            document.getElementById('cashPaymentSection').classList.add('d-none');
+            
+            // Tampilkan processing message khusus cash (dengan ceklist, bukan spinner)
+            document.getElementById('statusMessages').classList.remove('d-none');
+            document.getElementById('processingMessage').classList.remove('d-none');
+            
+            // Ganti spinner dengan ceklist untuk cash
+            const processingAnimation = document.querySelector('#processingMessage .processing-animation');
+            if (processingAnimation) {
+                processingAnimation.innerHTML = '<i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>';
+                processingAnimation.classList.remove('processing-animation');
+                processingAnimation.classList.add('status-animation');
+            }
+            
+            document.getElementById('processingText').textContent = message;
+        }
+
+        // Fungsi untuk menyelesaikan pesanan cash
+        function finishCashOrder(orderId) {
+            // Reset cart
+            cartItems = [];
+            updateCartDisplay();
+            
+            // Tutup modal
+            closePaymentModal();
+        }
+        // Event listener untuk close success message
+        document.getElementById('closeSuccess').addEventListener('click', function() {
+            // reset cart ada di fungsi nota
+            closePaymentModal();
+        });
+
+        // Fungsi untuk menampilkan toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toastNotification');
+            toast.textContent = message;
+            toast.className = 'toast-notification';
+            toast.classList.add(type);
+            
+            // Tampilkan toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Sembunyikan setelah 3 detik
+            setTimeout(() => {
+                toast.classList.remove('show');
+                // Reset class setelah animasi selesai
+                setTimeout(() => {
+                    toast.className = 'toast-notification';
+                }, 300);
+            }, 3000);
+        }
+        
+        // Fade in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInOnScroll = () => {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', fadeInOnScroll);
+        window.addEventListener('load', fadeInOnScroll);
+        
+        // Initial check on page load
+        fadeInOnScroll();
+        
+        // Initialize cart display
+        updateCartDisplay();
+    </script>
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="toast-notification"></div>
+</body>
+</html>
