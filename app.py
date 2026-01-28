@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import mysql.connector
 from datetime import datetime
 from functools import wraps
+import os
 
 app = Flask(__name__)
 app.secret_key = 'warungbiru_secret_key'
@@ -10,11 +11,11 @@ app.config['SESSION_TYPE'] = 'filesystem'
 # Koneksi database
 def get_db_connection():
     conn = mysql.connector.connect(
-        host='warbir-u66541.vm.elestio.app',
-        port=24306,
-        user='root',
-        password='eC-s1mRvFrr330cyr7--S',
-        database='warbir',
+        host=os.getenv("DB_HOST"),
+        port=int(os.getenv("DB_PORT", 3306)),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME"),
         autocommit=False
     )
     return conn
